@@ -1,0 +1,254 @@
+library(WriteXLS)
+library(sqldf)
+out <- mean(x<-(c(3,7)))
+out
+out <- mean(x= (c(3,7)))
+out
+mean(y=c(3,7))
+x<-0
+y<-0
+mean(y=c(3,7))
+x
+y
+mean(y<-c(3,7))
+mean(y=c(3,7))
+mean(c(3,7))
+y = c(3,7)
+y
+y <- c(3,7)
+y
+mean(y)
+mean(x)
+apply
+n <- 5
+df <- data.frame(rep('a',n), rnorm(n),rnrm(n))
+df <- data.frame(rep('a',n), rnorm(n),rnorm(n))
+df
+?rep
+?rnorm
+debug(apply)
+sys.nframe()
+parent.frame()
+print(parent.frame())
+g <- function(y) {#
+  gg <- function() {#
+    # this gives us the information from sys.calls(), sys.parents() and sys.frames() as one object#
+    #print(sys.status())#
+    tmp <- sys.status()#
+    print(tmp)#
+  }#
+  if(y > 0) g(y-1) else gg()#
+}
+g(3)
+out <- paste("My", "name", "is", "Chris", ".", sep = " ")
+out
+paste(c("My", "name", "is", "Chris", "."), collapse = " ") # equivalent
+strsplit(out, split = ' ')
+tyoe(out)
+type(out)
+out <- c(out,'Her Name is Sarah')
+out
+strsplit(out, split = ' ')
+vars <- c("P", "HCA24", "SOH02")
+vars
+substring(vars, 2, 3)
+vars <- c("date98", "size98", "x98weights98", "sdfsd")
+grep("98", vars)
+gregexpr("98", vars)
+gsub("98", "04", vars)
+vars
+options(width=55)
+library(codetools)
+findGlobals(lm)[1:25]
+f <- function() { y <- 3;print(x+y)}
+f
+findGlobals(f)
+options()$warn
+debug(lm)
+n <- nrow(mtcars)
+lm(mpg ~ disp,data=mtcars)
+data[1:3,]
+print(n)
+n
+print(mf)
+model.response(mf[1:5,],"numeric")
+undebut(lm)
+undebug(lm)
+library(MASS)
+gamma.est <- function(data) {#
+  # this fits a gamma distribution to a collection of numbers#
+  m <- mean(data)#
+  v <- var(data)#
+  s <- v/m#
+  a <- m/s#
+  return(list(a=a,s=s))#
+}#
+#
+calcVar = function(estimates){#
+  var.of.ests <- apply(estimates, 2, var)#
+  return(((n-1)^2/n)*var.of.ests)#
+}#
+#
+gamma.jackknife.2 <- function(data) {#
+  ## jackknife the estimation#
+  n <- length(data)#
+  jack.estimates = gamma.est(data[-1])#
+  for (omitted.point in 2:n) {#
+    jack.estimates = rbind(jack.estimates, gamma.est(data[-omitted.point]))#
+  }#
+  jack.var = calcVar(jack.estimates)#
+  return(sqrt(jack.var))#
+}
+gamma.jackknife.2(cats$Hwt)
+traceback()
+options(error=recover)
+gamma.jackknife.2(cats$Hwt)
+estimates
+apply(estimates, 2, var)
+var(estimates, 2,var)
+estimates[,1]
+class(estimates)
+options(error=NULL)
+sizes <- function(){#
+  # fails because obj has character strings of object names not objects itself#
+  pfr = parent.frame()#
+  objSizes=sapply(ls(pfr), function(obj) {#
+    object.size(obj) # original code#
+  })#
+  print(objSizes)#
+}
+testFun <- function() {#
+  x <- rnorm(1e6)#
+  y <- rnorm(1e3)#
+  z <- 5#
+  sizes()#
+}
+object.size(rnorm(1e6))#
+object.size(rnorm(1e3))#
+object.size(5)
+testFun()
+sizes <- function(){#
+  ## should work though haven't test extensively#
+  pfr = parent.frame()#
+#
+  getSize <- function(obj, fr) {#
+    object.size(eval(as.name(obj), envir = fr))#
+    ## alternatively:#
+    ## object.size(get(obj, fr))#
+  }#
+  objSizes=sapply(ls(pfr), getSize, pfr)#
+  print(objSizes)#
+}
+testFun()
+sizes <- function(){#
+  pfr = parent.frame()#
+#
+  getSize <- function(obj) {#
+    object.size(eval(as.name(obj)))#
+  }#
+  objSizes=sapply(ls(pfr), getSize)#
+  print(objSizes)#
+}#
+#
+testFun()
+mpesa <- read.csv('MPESA.csv')
+library(maptools)#
+#Setting the directory#
+setwd('/Users/Diego/Desktop/IBM/Raw_Data/Kenya_Ag_Data')#
+#
+#Kenya Shape File#
+kenya_shapefile <- readShapePoly('county/County.shp')#
+plot(kenya_shapefile)
+mpesa <- read.csv('MPESA.csv')
+mpesa <- read.csv('MPESA.csv')
+setwd('/Users/Diego/Desktop/IBM/Raw_Data')
+mpesa <- read.csv('MPESA.csv')
+head(mpesa)
+mpesa_sub <- subset(mpesa,mpesa$LAT != 'NO_RESULTS' & mpesa$LNG != 'NO_RESULTS')
+head(mpesa_sub)
+mpesa_sub <- subset(mpesa,mpesa$LAT != 'NO_RESULTS' | mpesa$LNG != 'NO_RESULTS')
+head(mpesa_sub)
+equity <- read.csv('equity.csv')
+head(equity)
+plot(kenya_shapefile)
+points(equity$Longitude, equity$Latitude,pch=20,col='red',cex=0.8,add= TRUE)
+points(mpesa_sub$LNG, mpesa_sub$LAT,pch=20,col='orange',cex=0.8,add= TRUE)
+points(mpesa_sub$LNG, mpesa_sub$LAT,pch=20,col='orange',cex=0.8)
+points(mpesa_sub$LNG, mpesa_sub$LAT,pch=20,col='orange',cex=0.8, add = TRUE)
+points(mpesa_sub$LNG, mpesa_sub$LAT,pch=20,col='blue',cex=0.8, add = TRUE)
+plot(kenya_shapefile)
+points(mpesa_sub$LNG, mpesa_sub$LAT,pch=20,col='blue',cex=0.8, add = TRUE)
+points(mpesa_sub$LNG, mpesa_sub$LAT,pch=20,col='blue',cex=0.8, add= TRUE)
+points(equity$Longitude, equity$Latitude,pch=20,col='red',cex=0.8,add= TRUE)
+points(mpesa_sub$LNG, mpesa_sub$LAT,pch=20,col='blue',cex=0.8)
+points(equity$Longitude, equity$Latitude,pch=20,col='red',cex=0.8,add= TRUE)
+plot(kenya_shapefile)
+head(equity)
+head(mpesa_sub)
+head(mpesa_sub,50)
+plot(kenya_shapefile)
+points(equity$Longitude, equity$Latitude,pch=20,col='red',cex=0.8,add= TRUE)
+plot(kenya_shapefile)
+par(new=TRUE)
+points(equity$Longitude, equity$Latitude,pch=20,col='red',cex=0.8)
+points(mpesa_sub$LNG, mpesa_sub$LA, pch=20,col='blue',cex=0.8)
+points(mpesa_sub$LNG, mpesa_sub$LAT, pch=20,col='blue',cex=0.8)
+plot(kenya_shapefile)
+par(new=TRUE)
+points(mpesa_sub$LNG, mpesa_sub$LAT, pch=20,col='blue',cex=0.8)
+points(mpesa_sub$LNG, mpesa_sub$LAT, pch=20,col='red',cex=0.8)
+points(mpesa_sub$LNG, mpesa_sub$LAT, pch=20,col='red',cex=0.8)
+points(mpesa_sub$LNG, mpesa_sub$LAT, pch=20,col='red',cex=0.8)
+type(mpesa_sub$LNG)
+class(mpesa_sub$LNG)
+class(equity$Longitude)
+mpesa_sub$LAT <- as.numeric(mpesa_sub$LAT)
+mpesa_sub$LNG <- as.numeric(mpesa_sub$LNG)
+plot(kenya_shapefile)
+par(new=TRUE)
+points(mpesa_sub$LNG, mpesa_sub$LAT, pch=20,col='red',cex=0.8)
+class(mpesa_sub$LAT)
+class(mpesa_sub$LNG)
+mpesa_sub$TOWN
+class(mpesa_sub$TOWN)
+head(equity)
+class(equity$Town)
+mpesa_sub$Latitude <- as.numeric(mpesa_sub$LAT)
+mpesa_sub$Longitude <- as.numeric(mpesa_sub$LNG)
+points(mpesa_sub$Longitude, mpesa_sub$Latitude, pch=20,col='red',cex=0.8)
+points(equity$Longitude, equity$Latitude,pch=20,col='red',cex=0.8)
+write.csc(mpesa_sub, file = 'cosasasi.csv')
+write.csv(mpesa_sub, file = 'cosasasi.csv')
+mpesa <- as.numeric(read.csv('MPESA.csv'))
+mpesa <- as.numeric(read.csv('MPESA.csv'))
+mpesa <-read.csv('MPESA.csv')
+head(mpesa)
+mpesa_sub$LAT <- as.numeric(mpesa_sub$LAT)
+mpesa_sub$LNG <- as.numeric(mpesa_sub$LNG)
+mpesa_sub <- subset(mpesa,mpesa$LAT != 'NO_RESULTS' | mpesa$LNG != 'NO_RESULTS')
+write.csv(mpesa_sub, file = 'cosasasi.csv')
+class(mpesa_sub$LAT)
+mpesa_sub <- subset(mpesa,mpesa$LAT != 'NO_RESULTS' | mpesa$LNG != 'NO_RESULTS')
+mpesa_sub$LAT <- as.numeric(mpesa_sub$LAT)
+mpesa_sub$LNG <- as.numeric(mpesa_sub$LNG)
+head(mpesa_sub)
+mpesa <-read.csv('MPESA.csv')
+mpesa_sub <- subset(mpesa,mpesa$LAT != 'NO_RESULTS' | mpesa$LNG != 'NO_RESULTS')
+class(mpesa_sub$LAT)
+mpesa <-read.csv('MPESA.csv')
+mpesa_sub <- subset(mpesa,mpesa$LAT != 'NO_RESULTS' | mpesa$LNG != 'NO_RESULTS')
+mpesa_sub$LAT <- as.numeric(as.character(mpesa_sub$LAT))
+mpesa_sub$LNG <- as.numeric(as.character(mpesa_sub$LNG))
+head(mpesa_sub)
+class(mpesa_sub$LAT)
+plot(kenya_shapefile)
+points(mpesa_sub$Longitude, mpesa_sub$Latitude, pch=20,col='red',cex=0.8)
+points(mpesa_sub$LNG, mpesa_sub$LAT, pch=20,col='red',cex=0.8)
+plot(kenya_shapefile)
+points(equity$Longitude, equity$Latitude,pch=20,col='dodgerblue',cex=0.8)
+points(mpesa_sub$LNG, mpesa_sub$LAT, pch=20,col='brown1',cex=0.8)
+points(equity$Longitude, equity$Latitude,pch=20,col='dodgerblue',cex=0.8)
+plot(kenya_shapefile)
+points(mpesa_sub$LNG, mpesa_sub$LAT, pch=20,col='brown1',cex=0.8)
+points(equity$Longitude, equity$Latitude,pch=20,col='dodgerblue',cex=0.8)
+legend( x="bottomleft",legend=c("M-PESA Agents","Equity Bank Agents"),col=c("brown1","dodgerblue"), pch=c(20,20),cex=0.6,merge=FALSE )
