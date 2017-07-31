@@ -3,15 +3,15 @@
 library(maptools)
 
 #Setting the directory
-setwd('/Users/Diego/Desktop/IBM/Raw_Data/Kenya_Ag_Data')
+setwd('/Users/diego/Desktop/Projects_Code/natural_infrastructural_capital/Raw_Data')
 
 #Kenya Shape File
-kenya_shapefile <- readShapePoly('county/County.shp')
+kenya_shapefile <- readShapePoly('kenya_ag_data/county/County.shp')
 plot(kenya_shapefile)
 
 ### Plotting microgrids and solar projects
 
-setwd('/Users/Diego/Desktop/IBM/Raw_Data')
+setwd('/Users/diego/Desktop/Projects_Code/natural_infrastructural_capital/Raw_Data')
 power <- read.csv('everyone.csv')
 
 government <- subset(power, power$Company == 'government' & power$Type =='microgrid')

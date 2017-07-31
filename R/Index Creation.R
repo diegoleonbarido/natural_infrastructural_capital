@@ -8,8 +8,9 @@ library(maptools)
 library(RColorBrewer)
 library(corrgram)
 library(reshape)
+library(data.table)
 
-setwd('/Users/Diego/Desktop/IBM/Raw_Data')
+setwd('/Users/diego/Desktop/Projects_Code/natural_infrastructural_capital/Raw_Data')
 stats_analysis <- read.csv('comp_inf_for_stats.csv')
 
 
@@ -110,6 +111,8 @@ index_vars <- stats_analysis[vars]
 #Note water points changes the results!
 
 index_vars$index <-stats_analysis$r_fac_1000+stats_analysis$r_elec_fac+stats_analysis$r_dist_town+stats_analysis$r_dist_roads+stats_analysis$r_sec_roads+stats_analysis$r_crop_diversity+stats_analysis$r_crop_intensity+stats_analysis$r_dist_rivers+stats_analysis$r_irrigation + stats_analysis$r_pop_dens + stats_analysis$r_equity 
+index_vars$nat_cap <- stats_analysis$r_crop_diversity+stats_analysis$r_crop_intensity+stats_analysis$r_dist_rivers+stats_analysis$r_irrigation
+index_vars$inf_cap <- stats_analysis$r_fac_1000+stats_analysis$r_elec_fac+stats_analysis$r_dist_town+stats_analysis$r_dist_roads+stats_analysis$r_sec_roads + stats_analysis$r_pop_dens + stats_analysis$r_equity
 
 #Suggest removing these two variables from the analysis as they are not updated.
 #stats_analysis$r_dist_grid
@@ -147,6 +150,7 @@ corrgram(corr_vars, order=TRUE, lower.panel=panel.shade,upper.panel=panel.pie, t
 offgrid <- subset(index_vars,index_vars$offgrid == 1)
 no_offgrid <- subset(index_vars,index_vars$offgrid == 0)
 
+
 #Density
 plot(density(offgrid$index))
 plot(density(below$index))
@@ -156,8 +160,10 @@ below <- subset(index_vars,index_vars$index < 4 & index_vars$offgrid != 1 )
 above <- subset(index_vars,index_vars$index > 4 & index_vars$offgrid != 1 )
 
 #Boxplot
-boxplot(offgrid$index,no_offgrid$index,ylab='MED Index',names=c('Offgrid','No-Offgrid'),main='MED Index by Offgrid Status')
+boxplot(offgrid$inf_cap,no_offgrid$inf_cap,ylab='MED Index',names=c('Offgrid','No-Offgrid'),main='MED Index by Offgrid Status')
 
+index_vars$offgrid <- as.factor(index_vars$offgrid )
+ggplot(index_vars, aes(x=index_vars$offgrid, y=index_vars$inf_cap, fill=index_vars$offgrid)) + geom_boxplot() 
 compare1 <- sapply(offgrid,mean,na.rm=TRUE)
 compare2 <- sapply(above,mean,na.rm=TRUE)
 
@@ -184,8 +190,8 @@ summary(logistic)
 ###################
 #Mapping the index
 
-setwd('/Users/Diego/Desktop/IBM/Raw_Data/Kenya_Ag_Data')
-wards_shapefile <- readShapePoly('wards/OGRGeoJSON.shp')
+setwd('/Users/diego/Desktop/Projects_Code/natural_infrastructural_capital/Raw_Data/')
+wards_shapefile <- readShapePoly('kenya_ag_data/wards/OGRGeoJSON.shp')
 wards <- data.frame(wards_shapefile)
 
 ###Starting to plot our stats
@@ -226,10 +232,75 @@ class <- classIntervals(plotvar,nclr,style='fixed',fixedBreaks = seq(min,max,bre
 colcode <- findColours(class,plotclr) 
 
 legend('bottomleft',legend = names(attr(colcode,'table')),title='MED Score',fill=attr(colcode,'palette'),cex=0.56,bty='n')
-	
 
 
 
 
+##############################################
+##############################################
+# Stats from paper
+
+
+
+#### 1. Stats comparing Wards with Offgrid projects vs Wards with no Offgrid Projects
+index_vars$off_grid_type <- ifelse(index_vars$offgrid==1,"Off-grid Facilities","No Off-grid Facilities")
+
+#Infrastructural Labels
+inf_cap_1 <- quantile(index_vars$inf_cap,probs=c(0.01,0.99),na.rm=TRUE)[1]
+inf_cap_99 <- quantile(index_vars$inf_cap,probs=c(0.01,0.99),na.rm=TRUE)[2]
+index_vars$label_inf_cap <- ifelse(index_vars$inf_cap<inf_cap_1 | index_vars$inf_cap>inf_cap_99,as.character(index_vars$WARD),"")
+
+#Med Index Labels
+med_1 <- quantile(index_vars$index,probs=c(0.01,0.99),na.rm=TRUE)[1]
+med_99 <- quantile(index_vars$index,probs=c(0.01,0.999999999),na.rm=TRUE)[2]
+index_vars$label_med <- ifelse(index_vars$index<med_1 | index_vars$index>med_99,as.character(index_vars$WARD),"")
+
+
+inf_cap <- ggplot(index_vars, aes(x=index_vars$off_grid_type, y=index_vars$inf_cap, fill=index_vars$off_grid_type)) + geom_boxplot(position=dodge) +
+  theme_bw() + theme(axis.line = element_line(colour = "grey"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.border = element_blank(), panel.background = element_blank()) +
+  theme(legend.position="bottom") + ggtitle("Wards with and without Off-grid Projects") + theme(legend.position="none") + geom_text(aes(label=index_vars$label_inf_cap),size=2,vjust=1,hjust=-0.2,alpha=0.6) +
+  xlab("") + ylab("Infrastructural Capital Score") + ylim(0,7)
+
+nat_cap <- ggplot(index_vars, aes(x=index_vars$off_grid_type, y=index_vars$nat_cap, fill=index_vars$off_grid_type)) + geom_boxplot(position=dodge) +
+  theme_bw() + theme(axis.line = element_line(colour = "grey"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.border = element_blank(), panel.background = element_blank()) +
+  theme(legend.position="bottom") + ggtitle("Wards with and without Off-grid Projects") + theme(legend.position="none") +
+  xlab("") + ylab("Natural Capital Score") + ylim(0,7)
+
+med_index <- ggplot(index_vars, aes(x=index_vars$off_grid_type, y=index_vars$index, fill=index_vars$off_grid_type)) + geom_boxplot(position=dodge) +
+  theme_bw() + theme(axis.line = element_line(colour = "grey"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.border = element_blank(), panel.background = element_blank()) +
+  theme(legend.position="bottom") + ggtitle("Wards with and without Off-grid Projects") + theme(legend.position="none") + geom_text(aes(label=index_vars$label_med),size=2,vjust=1,hjust=-0.2,alpha=0.6) +
+  xlab("") + ylab("MED Index Score")+ ylim(0,7)
+
+
+
+####2 Reading shapefile with different offgrid data
+
+wards_power_shapefile <- readShapePoly('kenya_ag_data/offgrid_infrastructure/offgrid_infrastructure.shp')
+wpower_df <- data.frame(wards_power_shapefile) %>% mutate(WARD=COUNTY_A_1) %>% select(WARD,Company,Type)
+
+#Subsetting and Relabling for doing the boxplots
+power_wards <- merge(index_vars,wpower_df,by=c('WARD'))
+power_wards_offgrid <- subset(power_wards,power_wards$Type!='power')
+power_wards_offgrid$Label <- ifelse(power_wards_offgrid$Company == 'government' & power_wards_offgrid$Type =='microgrid','Government Microgrid',ifelse(power_wards_offgrid$Type =='solar','Solar Entrepreneur',ifelse(power_wards_offgrid$Company != 'government' & power_wards_offgrid$Type =='microgrid','Entrepreneur Microgrid','Greenfield')))
+
+#Infrastructural Offgrid Labels
+inf_cap_1 <- quantile(power_wards_offgrid$inf_cap,probs=c(0.01,0.99),na.rm=TRUE)[1]
+inf_cap_99 <- quantile(power_wards_offgrid$inf_cap,probs=c(0.01,0.99),na.rm=TRUE)[2]
+power_wards_offgrid$label_inf_cap <- ifelse(power_wards_offgrid$inf_cap<inf_cap_1 | power_wards_offgrid$inf_cap>inf_cap_99,as.character(index_vars$WARD),"")
+
+inf_cap_offgrid <- ggplot(power_wards_offgrid, aes(x=power_wards_offgrid$Label, y=power_wards_offgrid$inf_cap, fill=power_wards_offgrid$Label)) + geom_boxplot(position=dodge) +
+  theme_bw() + theme(axis.line = element_line(colour = "grey"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.border = element_blank(), panel.background = element_blank()) +
+  theme(legend.position="bottom") + theme(legend.position="none") +  xlab("") + ylab("Infrastructural Capital Score")+ ylim(0,7)
+
+nat_cap_offgrid <- ggplot(power_wards_offgrid, aes(x=power_wards_offgrid$Label, y=power_wards_offgrid$nat_cap, fill=power_wards_offgrid$Label)) + geom_boxplot(position=dodge) +
+  theme_bw() + theme(axis.line = element_line(colour = "grey"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.border = element_blank(), panel.background = element_blank()) +
+  theme(legend.position="bottom") + theme(legend.position="none") +  xlab("") + ylab("Natural Capital Score") + ylim(0,7)
+
+index_offgrid <- ggplot(power_wards_offgrid, aes(x=power_wards_offgrid$Label, y=power_wards_offgrid$index, fill=power_wards_offgrid$Label)) + geom_boxplot(position=dodge) +
+  theme_bw() + theme(axis.line = element_line(colour = "grey"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.border = element_blank(), panel.background = element_blank()) +
+  theme(legend.position="bottom") + theme(legend.position="none") +  xlab("") + ylab("MED Index Score") + ylim(0,7)
+
+
+#### Mean stats by group
 
 
